@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE com.yu.mybatis.simple.mapper
+        PUBLIC "-//mybatis.org// DTD Config 3 . 0//EN"
+        "http://mybatis.org/dtd/mybatis-3-com.yu.mybatis.simple.mapper.dtd">
+<com.yu.mybatis.simple.mapper namespace="com.yu.mybatis.simple.com.yu.mybatis.simple.mapper.CountryMapper">
+    <select id="selectAll" resultType="Country">
+        SELECT id,country_name,country_code FROM country
+    </select>
+</com.yu.mybatis.simple.mapper>

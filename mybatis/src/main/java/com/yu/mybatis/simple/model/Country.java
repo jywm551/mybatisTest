@@ -7,8 +7,8 @@ package com.yu.mybatis.simple.model;
 
 public class Country {
     private Long id;
-    private String country_name;
-    private String country_code;
+    private String countryName;
+    private String countryCode;
 
     public Long getId() {
         return id;
@@ -18,19 +18,19 @@ public class Country {
         this.id = id;
     }
 
-    public String getCountry_name() {
-        return country_name;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
-    public String getCountry_code() {
-        return country_code;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setCountry_code(String country_code) {
-        this.country_code = country_code;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 }

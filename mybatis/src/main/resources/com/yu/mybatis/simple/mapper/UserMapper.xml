@@ -27,7 +27,7 @@
             user_email,
             user_info,
             head_img,
-            create_time
+            creat_time
         FROM sys_user
     </select>
 
@@ -44,4 +44,33 @@
             INNER JOIN sys_role r ON r.id = ur.role_id
         WHERE u.id = #{userId}
     </select>
+
+    <insert id="insert">
+        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
+        VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insert2" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
+        VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insert3">
+        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
+        VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
+        #{createTime,jdbcType=TIMESTAMP})
+        <selectKey keyColumn="id" resultType="long" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <update id="updateById">
+        UPDATE sys_user
+        SET user_name = #{userName},
+            user_password = #{userPassword},
+            user_email = #{userEmail},
+            user_info = #{userInfo}
+    </update>
 </mapper>

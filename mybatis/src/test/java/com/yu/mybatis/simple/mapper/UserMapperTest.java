@@ -44,7 +44,7 @@ public class UserMapperTest extends BaseMapperTest {
     @Test
     public void testInsert() {
         SqlSession session = getSqlSessionFactory();
-        try  {
+        try {
             UserMapper mapper = session.getMapper(UserMapper.class);
 
             SysUser sysUser = new SysUser();
@@ -59,7 +59,7 @@ public class UserMapperTest extends BaseMapperTest {
 
             Assert.assertEquals(1, insert);
             Assert.assertNull(sysUser.getId());
-        }finally {
+        } finally {
             session.rollback();
             session.close();
         }
@@ -85,6 +85,45 @@ public class UserMapperTest extends BaseMapperTest {
             Assert.assertNotNull(sysUser.getId());
 
         } finally {
+            session.rollback();
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateById() {
+        SqlSession session = getSqlSessionFactory();
+        try {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser user = mapper.selectById(1L);
+            Assert.assertEquals("admin", user.getUserName());
+            user.setUserName("admin_test");
+            user.setUserEmail("test@mybatis.com");
+            int i = mapper.updateById(user);
+            Assert.assertEquals(1, i);
+            user = mapper.selectById(1L);
+            Assert.assertEquals("admin_test", user.getUserName());
+        } finally {
+            session.rollback();
+            session.close();
+        }
+    }
+
+    @Test
+    public void testDeleteById(){
+        SqlSession session = getSqlSessionFactory();
+        try {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser user = mapper.selectById(1L);
+            Assert.assertNotNull(user);
+            Assert.assertEquals(1,mapper.deleteById(1L));
+            Assert.assertNull(mapper.selectById(1L));
+
+            SysUser user1 = mapper.selectById(1001L);
+            Assert.assertNotNull(user1);
+            Assert.assertEquals(1,mapper.deleteById(user1));
+            Assert.assertNull(mapper.selectById(1001L));
+        }finally {
             session.rollback();
             session.close();
         }

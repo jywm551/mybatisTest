@@ -27,7 +27,7 @@
             user_email,
             user_info,
             head_img,
-            creat_time
+            create_time
         FROM sys_user
     </select>
 
@@ -40,8 +40,11 @@
             r.create_time,
             u.user_name,
             u.user_email
-        FROM sys_user u INNER JOIN sys_user_role ur ON u.id = ur.user_id
-            INNER JOIN sys_role r ON r.id = ur.role_id
+        FROM sys_user u
+            INNER JOIN sys_user_role ur
+                ON u.id = ur.user_id
+            INNER JOIN sys_role r
+                ON r.id = ur.role_id
         WHERE u.id = #{userId}
     </select>
 
@@ -73,7 +76,7 @@
             user_email    = #{userEmail},
             user_info     = #{userInfo},
             head_img      = #{headImg,jdbcType=BLOB},
-            creat_time    = #{createTime}
+            create_time    = #{createTime}
         WHERE id = #{id}
     </update>
 
@@ -81,4 +84,33 @@
         DELETE FROM sys_user
         WHERE id = #{id}
     </delete>
+
+    <select id="selectRolesByUserIdAndRoleEnabled" resultType="com.yu.mybatis.simple.model.SysRole">
+        SELECT
+            r.id,
+            r.role_name,
+            r.enabled,
+            r.create_by,
+            r.create_time
+        FROM sys_user u
+            INNER JOIN sys_user_role ur
+                ON u.id = ur.user_id
+            INNER JOIN sys_role r
+                ON r.id = ur.role_id
+        WHERE u.id = #{userId} AND r.enabled = #{enabled}
+    </select>
+
+    <select id="selectByUser" resultType="com.yu.mybatis.simple.model.SysUser">
+        SELECT
+            id,
+            user_name,
+            user_password,
+            user_email,
+            user_info,
+            head_img,
+            create_time
+        FROM sys_user
+        WHERE user_name LIKE concat('%', '#{userName}', '%')
+              AND user_email = #{userEmail}
+    </select>
 </mapper>

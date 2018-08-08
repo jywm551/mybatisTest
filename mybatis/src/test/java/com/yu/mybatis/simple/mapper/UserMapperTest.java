@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
 
@@ -110,22 +111,48 @@ public class UserMapperTest extends BaseMapperTest {
     }
 
     @Test
-    public void testDeleteById(){
+    public void testDeleteById() {
         SqlSession session = getSqlSessionFactory();
         try {
             UserMapper mapper = session.getMapper(UserMapper.class);
             SysUser user = mapper.selectById(1L);
             Assert.assertNotNull(user);
-            Assert.assertEquals(1,mapper.deleteById(1L));
+            Assert.assertEquals(1, mapper.deleteById(1L));
             Assert.assertNull(mapper.selectById(1L));
 
             SysUser user1 = mapper.selectById(1001L);
             Assert.assertNotNull(user1);
-            Assert.assertEquals(1,mapper.deleteById(user1));
+            Assert.assertEquals(1, mapper.deleteById(user1));
             Assert.assertNull(mapper.selectById(1001L));
-        }finally {
+        } finally {
             session.rollback();
             session.close();
         }
+    }
+
+    @Test
+    public void testSelectRolesByUserIdAndRoleEnabled() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            List<SysRole> sysRoles = mapper.selectRolesByUserIdAndRoleEnabled(1L, 1);
+
+            Assert.assertNotNull(sysRoles);
+            Assert.assertTrue(sysRoles.size() > 0);
+        }
+    }
+
+    @Test
+    public void testProxy() {
+
+        SqlSession session = getSqlSessionFactory();
+        MyMapperProxy<UserMapper> userMapperMyMapperProxy = new MyMapperProxy<>(UserMapper.class, session);
+
+        UserMapper o = (UserMapper) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{UserMapper.class},
+                userMapperMyMapperProxy);
+
+        List<SysUser> sysUsers = o.selectAll();
+        Assert.assertNotNull(sysUsers);
+        Assert.assertTrue(sysUsers.size() > 0);
     }
 }

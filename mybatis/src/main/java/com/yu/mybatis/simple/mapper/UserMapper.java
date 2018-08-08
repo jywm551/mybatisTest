@@ -2,6 +2,7 @@ package com.yu.mybatis.simple.mapper;
 
 import com.yu.mybatis.simple.model.SysRole;
 import com.yu.mybatis.simple.model.SysUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,7 @@ public interface UserMapper {
     int deleteById(Long id);
 
     int deleteById(SysUser sysUser);
+
+    List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId, @Param("enabled") Integer enabled);
+
 }

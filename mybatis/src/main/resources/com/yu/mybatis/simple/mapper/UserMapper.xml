@@ -49,19 +49,13 @@
     </select>
 
     <insert id="insert">
-        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
-        VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
-                #{createTime,jdbcType=TIMESTAMP})
-    </insert>
-
-    <insert id="insert2" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
+        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, create_time)
         VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
                 #{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     <insert id="insert3">
-        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, creat_time)
+        INSERT INTO sys_user (id, user_name, user_password, user_email, user_info, head_img, create_time)
         VALUES (#{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo}, #{headImg,jdbcType=BLOB},
         #{createTime,jdbcType=TIMESTAMP})
         <selectKey keyColumn="id" resultType="long" keyProperty="id" order="AFTER">
@@ -76,7 +70,7 @@
             user_email    = #{userEmail},
             user_info     = #{userInfo},
             head_img      = #{headImg,jdbcType=BLOB},
-            create_time    = #{createTime}
+            create_time   = #{createTime}
         WHERE id = #{id}
     </update>
 
@@ -102,15 +96,129 @@
 
     <select id="selectByUser" resultType="com.yu.mybatis.simple.model.SysUser">
         SELECT
-            id,
-            user_name,
-            user_password,
-            user_email,
-            user_info,
-            head_img,
-            create_time
+        id,
+        user_name,
+        user_password,
+        user_email,
+        user_info,
+        head_img,
+        create_time
         FROM sys_user
-        WHERE user_name LIKE concat('%', '#{userName}', '%')
-              AND user_email = #{userEmail}
+        <where>
+            <if test="userName != null and userName !=''">
+                AND user_name LIKE concat('%', #{userName}, '%')
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                AND user_email = #{userEmail}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBySelective">
+        UPDATE sys_user
+        <set>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                user_password = #{userPassword},
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                user_email = #{userEmail},
+            </if>
+            <if test="userInfo != null and userInfo !=''">
+                user_info = #{userInfo},
+            </if>
+            <if test="headImg !=null">
+                head_img = #{headImg, jdbcType = BLOB},
+            </if>
+            <if test="createTime !=null">
+                create_time = #{createTime, jdbcType = TIMESTAMP},
+            </if>
+            id = #{id},
+        </set>
+        WHERE id =#{id}
+    </update>
+
+    <insert id="insert2" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user(
+        user_name,user_password,
+        <if test="userEmail != null and userEmail != ''">
+            user_email
+        </if>
+        user_info,head_img,create_time
+        )
+        VALUES (
+        #{userName},#{userPassword},
+        <if test="userEmail != null and userEmail != ''">
+            #{userEmail},
+        </if>
+        #{userInfo},#{headImg,jdbcType = BLOB},
+        #{createTime, jdbcType = TIMESTAMP}
+        )
+    </insert>
+
+    <select id="selectByIdOrUserName" resultMap="userMap">
+        SELECT id,user_name,user_password,user_email,user_info,head_img,create_time
+        FROM sys_user
+        WHERE 1 = 1
+        <choose>
+            <when test="id != null">
+                and id = #{id}
+            </when>
+            <when test="userName !=null and userName != ''">
+                and user_name = #{userName}
+            </when>
+            <otherwise>
+                and 1 = 2
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectByIdList" resultMap="userMap">
+        SELECT id,user_name,user_password,user_email,user_info,head_img,create_time
+        FROM sys_user
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id" index="i">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertList">
+        INSERT INTO sys_user (user_name, user_password, user_email, user_info, head_img, create_time)
+        VALUES
+        <foreach collection="list" item="user" separator=",">
+            (#{user.userName},#{user.userPassword},#{user.userEmail},#{user.userInfo},
+            #{user.headImg,jdbcType=BLOB},#{user.createTime,jdbcType = TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <update id="updateByMap">
+        UPDATE sys_user
+        SET
+        <foreach collection="_parameter" item="val" separator="," index="key">
+            ${key} = #{val}
+        </foreach>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectUserAndRoleById" resultType="com.yu.mybatis.simple.model.SysUser">
+        SELECT
+            u.id,
+            u.user_name,
+            u.user_password,
+            u.user_email,
+            u.user_info,
+            u.head_img,
+            u.create_time,
+            r.id          "role.id",
+            r.role_name   "role.roleName",
+            r.enabled     "role.enabled",
+            r.create_by   "role.createBy",
+            r.create_time "role.createTime"
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON ur.user_id = u.id
+        INNER JOIN sys_role r ON r.id = ur.role_id
+        WHERE u.id=#{id}
     </select>
 </mapper>

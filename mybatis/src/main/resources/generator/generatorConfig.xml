@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD Mybatis Generator Configuration 1.0//EN"
+        "http://mybatis.org//dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- context 必选项id，defaultModelType 属性：
+        conditional：默认值，如果一个表的主键只有一个字段，那么不会为该字段生成实体类，而是将该字段合并到基本实体类中。
+        flat：为每张表生成实体类，包含所有字段
+        hierarchical：如果表有主键，则生成一个单独的主键实体类，如果表还有BLOB字段，则会为表生成一个包含所有BLOB的单独类，
+            会在生成的实体类之间维护关系
+        targetRuntime：指定生成代码的运行环境
+            Mybatis3：默认值
+            Mybatis3Simple：不会生成与Example相关的方法
+     -->
+    <context id="MySqlContext" targetRuntime="Mybatis3Simple" defaultModelType="flat">
+        <!-- 分隔符 MySql `user_info` SQL Server [user info]-->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!-- 配置如何生成注释信息 -->
+        <commentGenerator>
+            <!-- 用来阻止生成注释时包含时间戳,默认false -->
+            <property name="suppressDate" value="true"/>
+            <!-- 注释是否添加数据库表的备注信息，默认false -->
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306.mybatis"
+                        userId="root" password="111111"/>
+
+        <javaModelGenerator targetPackage="test.model" targetProject="src\main\java">
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="test.xml" targetProject="src\main\resource"/>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="test.dao" targetProject="src\main\java"/>
+
+        <!-- 必选属性 tableName：指定要生成的表名，% 表示要生成全部的表 -->
+        <table tableName="%">
+            <!-- 用来指定自动生成主键的属性，-->
+            <generatedKey column="id" sqlStatement="MySql"/>
+        </table>
+    </context>
+</generatorConfiguration>

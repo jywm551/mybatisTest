@@ -1,6 +1,7 @@
 package com.yu.mybatis.simple.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created By Yu On 2018/8/2
@@ -15,7 +16,17 @@ public class SysUser {
     private byte[] headImg;
     private Date createTime;
 
+    private List<SysRole> roleList;
     private SysRole role;
+
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
+    }
 
     public SysRole getRole() {
         return role;

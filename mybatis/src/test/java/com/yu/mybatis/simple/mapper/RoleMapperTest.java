@@ -1,5 +1,6 @@
 package com.yu.mybatis.simple.mapper;
 
+import com.yu.mybatis.simple.model.SysPrivilege;
 import com.yu.mybatis.simple.model.SysRole;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
@@ -41,6 +42,31 @@ public class RoleMapperTest extends BaseMapperTest {
             Assert.assertNotNull(sysRoles);
             Assert.assertTrue(sysRoles.size() > 0);
             Assert.assertNotNull(sysRoles.get(0).getRoleName());
+        }
+    }
+
+    @Test
+    public void testSelectRoleByUserIdChoose() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            RoleMapper mapper = session.getMapper(RoleMapper.class);
+            SysRole sysRole = mapper.selectRoleById(2L);
+            sysRole.setEnabled(0);
+            mapper.updateById(sysRole);
+            List<SysRole> sysRoleList = mapper.selectRoleByUserIdChoose(1L);
+            for (SysRole role : sysRoleList) {
+                System.out.println("角色名：" + role.getRoleName());
+                if (role.getId().equals(1L)) {
+                    Assert.assertNotNull(role.getPrivilegeList());
+                } else if (role.getId().equals(2L)) {
+                    Assert.assertNull(role.getPrivilegeList());
+                    continue;
+                }
+                for (SysPrivilege p : role.getPrivilegeList()) {
+                    System.out.println("权限名" + p.getPrivilegeName());
+                }
+            }
+
+
         }
     }
 }

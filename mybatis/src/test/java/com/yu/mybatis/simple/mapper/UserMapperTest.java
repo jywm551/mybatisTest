@@ -1,5 +1,6 @@
 package com.yu.mybatis.simple.mapper;
 
+import com.yu.mybatis.simple.model.SysPrivilege;
 import com.yu.mybatis.simple.model.SysRole;
 import com.yu.mybatis.simple.model.SysUser;
 import org.apache.ibatis.session.SqlSession;
@@ -275,33 +276,76 @@ public class UserMapperTest extends BaseMapperTest {
     }
 
     @Test
-    public void testUpdateByMap(){
+    public void testUpdateByMap() {
         SqlSession session = getSqlSessionFactory();
         try {
             UserMapper mapper = session.getMapper(UserMapper.class);
-            Map<String ,Object> map = new HashMap<>();
-            map.put("id",1L);
-            map.put("user_email","test@mybatis.com");
-            map.put("user_password","12345678");
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", 1L);
+            map.put("user_email", "test@mybatis.com");
+            map.put("user_password", "12345678");
 
             mapper.updateByMap(map);
             SysUser sysUser = mapper.selectById(1L);
-            Assert.assertEquals("test@mybatis.com",sysUser.getUserEmail());
+            Assert.assertEquals("test@mybatis.com", sysUser.getUserEmail());
 
-        }finally {
+        } finally {
             session.rollback();
             session.close();
         }
     }
 
     @Test
-    public void testSelectUserAndRoleById(){
-        try (SqlSession session =getSqlSessionFactory()){
+    public void testSelectUserAndRoleById() {
+        try (SqlSession session = getSqlSessionFactory()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
             SysUser sysUser = mapper.selectUserAndRoleById(1001L);
             Assert.assertNotNull(sysUser);
             Assert.assertNotNull(sysUser.getRole());
+        }
+    }
 
+    @Test
+    public void testSelectUserAndRoleByIdSelect() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser sysUser = mapper.selectUserAndRoleByIdSelect(1001L);
+            Assert.assertNotNull(sysUser);
+            System.out.println("调用user.getRole()");
+            Assert.assertNotNull(sysUser.getRole());
+        }
+    }
+
+    @Test
+    public void testSelectAllUserAndRoles() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            List<SysUser> userList = mapper.selectAllUserAndRoles();
+            System.out.println("用户数：" + userList.size());
+            for (SysUser user : userList) {
+                System.out.println("用户名:" + user.getUserName());
+                for (SysRole role : user.getRoleList()) {
+                    System.out.println("角色名:" + role.getRoleName());
+                    for (SysPrivilege privilege : role.getPrivilegeList()) {
+                        System.out.println("权限名：" + privilege.getPrivilegeName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testUserRoleListMapSelect(){
+        try (SqlSession session = getSqlSessionFactory()){
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser sysUser = mapper.selectAllUserAndRolesSelect(1L);
+            System.out.println("用户名:" + sysUser.getUserName());
+            for (SysRole role : sysUser.getRoleList()) {
+                System.out.println("角色名:" + role.getRoleName());
+                for (SysPrivilege privilege : role.getPrivilegeList()) {
+                    System.out.println("权限名：" + privilege.getPrivilegeName());
+                }
+            }
         }
     }
 }

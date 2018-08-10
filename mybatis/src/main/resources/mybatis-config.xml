@@ -7,6 +7,7 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="logImpl" value="LOG4J"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!-- 元素下面配置了包的别名,确定的时候需要使用类的全限定名，配置之后，需要使用的时候就可以不需要写包名，只写类目-->

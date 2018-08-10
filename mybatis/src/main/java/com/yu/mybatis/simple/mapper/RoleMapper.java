@@ -19,6 +19,10 @@ public interface RoleMapper {
     @Select({"select id,role_name,enabled,create_by,create_time from sys_role where id=#{id}"})
     SysRole selectById(Long id);
 
+//    @ResultMap("roleResultMap")
+//    @Select({"select * from sys_role where id = #{id}"})
+    SysRole selectRoleById(Long id);
+
     @Select({"select * from sys_role where id=#{id}"})
     SysRole selectById2(Long id);
 
@@ -42,12 +46,15 @@ public interface RoleMapper {
     int insert3(SysRole sysRole);
 
     @Update("update sys_role " +
-            "set role_name=#{roleName} , enable=#{enabled} , create_by = #{createBy} ," +
+            "set role_name=#{roleName} , enabled=#{enabled} , create_by = #{createBy} ," +
             " create_time = #{createTime , jdbcType = TIMESTAMP}")
     int updateById(SysRole sysRole);
 
     @Delete("delete from sys_role where id = #{id}")
     int deleteById(Long id);
 
+    List<SysRole> selectAllRoleAndPrivilges();
+
+    List<SysRole> selectRoleByUserIdChoose(Long userId);
 
 }

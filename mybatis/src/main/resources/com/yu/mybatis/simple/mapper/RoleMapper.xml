@@ -10,4 +10,65 @@
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+
+    <resultMap id="rolePrivilegeListMap" extends="roleMap" type="com.yu.mybatis.simple.model.SysRole">
+        <collection property="privilegeList" columnPrefix="privilege_"
+                    resultMap="com.yu.mybatis.simple.mapper.PrivilegeMapper.privilegeMap"/>
+    </resultMap>
+
+    <resultMap id="rolePrivilegeListMapSelect" extends="roleMap" type="com.yu.mybatis.simple.model.SysRole">
+        <collection property="privilegeList" fetchType="lazy" column="{roleId=id}"
+                    select="com.yu.mybatis.simple.mapper.PrivilegeMapper.selectPrivilegeByRoleId"/>
+    </resultMap>
+
+    <resultMap id="rolePrivilegeListMapChoose" type="com.yu.mybatis.simple.model.SysRole">
+        <discriminator column="enabled" javaType="int">
+            <case value="1" resultMap="rolePrivilegeListMapSelect"/>
+            <case value="0" resultMap="roleMap"/>
+        </discriminator>
+    </resultMap>
+
+    <select id="selectRoleById" resultMap="roleMap">
+        SELECT *
+        FROM sys_role
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAllRoleAndPrivileges" resultMap="rolePrivilegeListMap">
+        SELECT
+            r.id,
+            r.role_name,
+            r.enabled,
+            r.create_by,
+            r.create_time,
+            p.id             privilege_id,
+            p.privilege_name privilege_privilege_name,
+            p.privilege_url  privilege_privilege_url
+        FROM sys_role r
+            INNER JOIN sys_role_privilege rp ON r.id = rp.role_id
+            INNER JOIN sys_privilege p ON p.id = rp.privilege_id
+    </select>
+
+    <select id="selectRoleByUserId" resultMap="rolePrivilegeListMapSelect">
+        SELECT
+            r.id,
+            r.role_name,
+            r.enabled,
+            r.create_by,
+            r.create_time
+        FROM sys_role r
+            INNER JOIN sys_user_role ur ON ur.role_id = r.id
+        WHERE user_id = #{userId}
+    </select>
+    
+    <select id="selectRoleByUserIdChoose" resultMap="rolePrivilegeListMapChoose">
+        SELECT r.id,
+            r.role_name,
+            r.enabled,
+            r.create_by,
+            r.create_time
+        FROM sys_role r
+        INNER JOIN sys_user_role ur ON ur.role_id = r.id
+        WHERE ur.user_id = #{userId}
+    </select>
 </mapper>

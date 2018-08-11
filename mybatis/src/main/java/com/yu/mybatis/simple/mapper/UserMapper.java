@@ -18,7 +18,7 @@ public interface UserMapper {
 
     int insert2(SysUser sysUser);
 
-    int insert3(SysUser sysUser);
+//    int insert3(SysUser sysUser);
 
     int updateById(SysUser sysUser);
 
@@ -38,7 +38,7 @@ public interface UserMapper {
 
     int insertList(List<SysUser> userList);
 
-    int updateByMap(Map<String,Object> map);
+    void updateByMap(Map<String, Object> map);
 
     SysUser selectUserAndRoleById(Long id);
 
@@ -47,4 +47,12 @@ public interface UserMapper {
     List<SysUser> selectAllUserAndRoles();
 
     SysUser selectAllUserAndRolesSelect(Long id);
+
+    void selectUserById(SysUser sysUser);
+
+    List<SysUser> selectUserPage(Map<String, Object> params);
+
+    void insertUserAndRoles(@Param("user") SysUser sysUser, @Param("roleIds") String roleIds);
+
+    void deleteUserById(Long id);
 }

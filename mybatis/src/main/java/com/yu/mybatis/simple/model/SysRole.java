@@ -1,5 +1,8 @@
 package com.yu.mybatis.simple.model;
 
+import com.yu.mybatis.simple.type.Enabled;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -7,10 +10,12 @@ import java.util.List;
  * Created By Yu On 2018/8/2
  * Description：
  **/
-public class SysRole {
+public class SysRole implements Serializable{
+
+    private static final long serialVersionUID = 7316941159686514732L;
     private Long id;
     private String roleName;
-    private Integer enabled;
+    private Enabled enabled;
     private Long createBy;
     private Date createTime;
 
@@ -49,11 +54,11 @@ public class SysRole {
         this.roleName = roleName;
     }
 
-    public Integer getEnabled() {
+    public Enabled getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Integer enabled) {
+    public void setEnabled(Enabled enabled) {
         this.enabled = enabled;
     }
 

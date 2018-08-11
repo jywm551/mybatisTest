@@ -3,6 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yu.mybatis.simple.mapper.UserMapper">
+
+    <!-- eviction 收回策略
+            LRU 移除最长时间不使用，默认值
+            FIFO 先进先出
+            SOFT 软使用
+            WEAK 弱使用
+         flushInterval 刷新间隔 毫秒单位
+         size 引用数目 默认1024
+         readOnly 只读 只读缓存只看不改
+        -->
+    <!--<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>-->
+
     <resultMap id="userMap" type="com.yu.mybatis.simple.model.SysUser">
         <id column="id" property="id"/>
         <result property="userName" column="user_name"/>
@@ -35,7 +47,7 @@
     </resultMap>
 
 
-    <select id="selectById" resultMap="userMap">
+    <select id="selectById" flushCache="false" resultMap="userMap">
         SELECT *
         FROM sys_user
         WHERE id = #{id}
@@ -166,7 +178,7 @@
         INSERT INTO sys_user(
         user_name,user_password,
         <if test="userEmail != null and userEmail != ''">
-            user_email
+            user_email,
         </if>
         user_info,head_img,create_time
         )
@@ -288,10 +300,53 @@
             u.user_name,
             u.user_password,
             u.user_email,
-            u. user_info,
-            u. head_img,
-            u. create_time
+            u.user_info,
+            u.head_img,
+            u.create_time
         FROM sys_user u
         WHERE u.id = #{id}
     </select>
+
+    <select id="selectUserById" statementType="CALLABLE" useCache="false">
+        {call select_user_by_id(
+                #{id , mode=IN},
+                #{userName, mode=OUT , jdbcType=VARCHAR},
+                #{userPassword, mode=OUT , jdbcType=VARCHAR},
+                #{userEmail, mode=OUT , jdbcType=VARCHAR},
+                #{userInfo, mode=OUT , jdbcType=VARCHAR},
+                #{headImg, mode=OUT , jdbcType =BLOB , javaType=_byte[]},
+                #{createTime, mode=OUT , jdbcType =TIMESTAMP}
+        )}
+    </select>
+
+    <select id="selectUserPage" statementType="CALLABLE" useCache="false" resultMap="userMap">
+        {
+        CALL select_user_page(
+                #{userName ,mode= IN},
+                #{offset,mode=IN},
+                #{limit,mode=IN},
+                #{total,mode=OUT,jdbcType=BIGINT}
+        )}
+    </select>
+
+    <insert id="insertUserAndRoles" statementType="CALLABLE">
+        {
+        CALL insert_user_and_roles(
+                #{user.id,mode=OUT, jdbcType=BIGINT},
+                #{user.userName,mode=IN},
+                #{user.userPassword,mode=IN},
+                #{user.userEmail,mode=IN},
+                #{user.userInfo,mode=IN},
+                #{user.headImg,mode=IN,jdbcType=BLOB},
+                #{user.createTime,mode = OUT,jdbcType=TIMESTAMP},
+                #{roleIds,mode=IN}
+        )}
+    </insert>
+
+    <delete id="deleteUserById" statementType="CALLABLE">
+        {
+        CALL delete_user_by_id(
+                #{id,mode=IN}
+        )}
+    </delete>
 </mapper>

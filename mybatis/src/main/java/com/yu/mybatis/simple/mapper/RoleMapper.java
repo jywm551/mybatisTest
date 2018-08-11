@@ -1,11 +1,17 @@
 package com.yu.mybatis.simple.mapper;
 
-import com.yu.mybatis.simple.model.SysPrivilege;
 import com.yu.mybatis.simple.model.SysRole;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+//@CacheNamespace(
+//        eviction = FifoCache.class,
+//        flushInterval = 60000,
+//        size = 512,
+//        readWrite = false
+//)
+@CacheNamespaceRef(RoleMapper.class)
 public interface RoleMapper {
 
 
@@ -19,7 +25,7 @@ public interface RoleMapper {
     @Select({"select id,role_name,enabled,create_by,create_time from sys_role where id=#{id}"})
     SysRole selectById(Long id);
 
-//    @ResultMap("roleResultMap")
+    //    @ResultMap("roleResultMap")
 //    @Select({"select * from sys_role where id = #{id}"})
     SysRole selectRoleById(Long id);
 
@@ -31,29 +37,12 @@ public interface RoleMapper {
     List<SysRole> selectAll();
 
 
-    @Insert("insert into sys_role(id,role_name,enabled,create_by,create_time)" +
-            " values (#{id},#{roleName},#{enabled},#{createBy},#{createTime.jdbcType=TIMESTAMP}")
-    int insert(SysRole sysRole);
-
-    @Insert("insert into sys_role(role_name,enabled,create_by,create_time)" +
-            " values (#{roleName},#{enabled},#{createBy},#{createTime.jdbcType=TIMESTAMP}")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insert2(SysRole sysRole);
-
-    @Insert("insert into sys_role(role_name,enabled,create_by,create_time)" +
-            " values (#{roleName},#{enabled},#{createBy},#{createTime.jdbcType=TIMESTAMP}")
-    @SelectKey(statement = "select last_insert_id()", keyProperty = "id", resultType = Long.class, before = false)
-    int insert3(SysRole sysRole);
 
     @Update("update sys_role " +
             "set role_name=#{roleName} , enabled=#{enabled} , create_by = #{createBy} ," +
-            " create_time = #{createTime , jdbcType = TIMESTAMP}")
-    int updateById(SysRole sysRole);
+            " create_time = #{createTime , jdbcType = TIMESTAMP} where id = #{id}")
+    void updateById(SysRole sysRole);
 
-    @Delete("delete from sys_role where id = #{id}")
-    int deleteById(Long id);
-
-    List<SysRole> selectAllRoleAndPrivilges();
 
     List<SysRole> selectRoleByUserIdChoose(Long userId);
 

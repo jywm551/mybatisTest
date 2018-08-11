@@ -2,6 +2,7 @@ package com.yu.mybatis.simple.mapper;
 
 import com.yu.mybatis.simple.model.SysPrivilege;
 import com.yu.mybatis.simple.model.SysRole;
+import com.yu.mybatis.simple.type.Enabled;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class RoleMapperTest extends BaseMapperTest {
         try (SqlSession session = getSqlSessionFactory()) {
             RoleMapper mapper = session.getMapper(RoleMapper.class);
             SysRole sysRole = mapper.selectRoleById(2L);
-            sysRole.setEnabled(0);
+            sysRole.setEnabled(Enabled.disabled);
             mapper.updateById(sysRole);
             List<SysRole> sysRoleList = mapper.selectRoleByUserIdChoose(1L);
             for (SysRole role : sysRoleList) {
@@ -65,8 +66,23 @@ public class RoleMapperTest extends BaseMapperTest {
                     System.out.println("权限名" + p.getPrivilegeName());
                 }
             }
-
-
         }
     }
+
+    @Test
+    public void testUpdateById() {
+        SqlSession session = getSqlSessionFactory();
+        try {
+            RoleMapper mapper = session.getMapper(RoleMapper.class);
+            SysRole sysRole = mapper.selectById(2L);
+            Assert.assertEquals(Enabled.enabled, sysRole.getEnabled());
+            sysRole.setEnabled(Enabled.disabled);
+            mapper.updateById(sysRole);
+
+        } finally {
+            session.rollback();
+            session.close();
+        }
+    }
+
 }

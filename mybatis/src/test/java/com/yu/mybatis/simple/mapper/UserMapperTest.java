@@ -335,8 +335,8 @@ public class UserMapperTest extends BaseMapperTest {
     }
 
     @Test
-    public void testUserRoleListMapSelect(){
-        try (SqlSession session = getSqlSessionFactory()){
+    public void testUserRoleListMapSelect() {
+        try (SqlSession session = getSqlSessionFactory()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
             SysUser sysUser = mapper.selectAllUserAndRolesSelect(1L);
             System.out.println("用户名:" + sysUser.getUserName());
@@ -348,4 +348,54 @@ public class UserMapperTest extends BaseMapperTest {
             }
         }
     }
+
+    @Test
+    public void testSelectUserById() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser sysUser = new SysUser();
+            sysUser.setId(1L);
+            mapper.selectUserById(sysUser);
+            Assert.assertNotNull(sysUser.getUserName());
+            System.out.println("用户名：" + sysUser.getUserName());
+        }
+    }
+
+    @Test
+    public void testSelectUserPage() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("userName", "ad");
+            params.put("offset", 0);
+            params.put("limit", 10);
+            List<SysUser> sysUserList = mapper.selectUserPage(params);
+            Long total = (Long) params.get("total");
+            System.out.println("总数：" + total);
+            for (SysUser user : sysUserList) {
+                System.out.println("用户名：" + user.getUserName());
+            }
+        }
+    }
+
+    @Test
+    public void testInsertAndDelete() {
+        try (SqlSession session = getSqlSessionFactory()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            SysUser sysUser = new SysUser();
+            sysUser.setUserName("test1");
+            sysUser.setUserPassword("123456");
+            sysUser.setUserEmail("test@mybatis.com");
+            sysUser.setUserInfo("test info");
+            sysUser.setHeadImg(new byte[]{1, 2, 3});
+            // 插入用户信息和角色关联信息
+            mapper.insertUserAndRoles(sysUser, "1,2");
+            Assert.assertNotNull(sysUser.getId());
+            Assert.assertNotNull(sysUser.getCreateTime());
+
+            mapper.deleteUserById(sysUser.getId());
+
+        }
+    }
+
 }

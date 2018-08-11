@@ -3,6 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yu.mybatis.simple.mapper.RoleMapper">
+
+    <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="false"/>
+
+    <cache-ref namespace="com.yu.mybatis.simple.mapper.RoleMapper"/>
+
     <resultMap id="roleMap" type="com.yu.mybatis.simple.model.SysRole">
         <id column="id" property="id"/>
         <result property="roleName" column="role_name"/>
@@ -24,7 +29,11 @@
     <resultMap id="rolePrivilegeListMapChoose" type="com.yu.mybatis.simple.model.SysRole">
         <discriminator column="enabled" javaType="int">
             <case value="1" resultMap="rolePrivilegeListMapSelect"/>
-            <case value="0" resultMap="roleMap"/>
+            <case value="0" resultMap="roleMap">
+                <id property="id" column="id"/>
+                <result property="roleName" column="role_name"/>
+            </case>
+
         </discriminator>
     </resultMap>
 
@@ -60,15 +69,16 @@
             INNER JOIN sys_user_role ur ON ur.role_id = r.id
         WHERE user_id = #{userId}
     </select>
-    
+
     <select id="selectRoleByUserIdChoose" resultMap="rolePrivilegeListMapChoose">
-        SELECT r.id,
+        SELECT
+            r.id,
             r.role_name,
             r.enabled,
             r.create_by,
             r.create_time
         FROM sys_role r
-        INNER JOIN sys_user_role ur ON ur.role_id = r.id
+            INNER JOIN sys_user_role ur ON ur.role_id = r.id
         WHERE ur.user_id = #{userId}
     </select>
 </mapper>

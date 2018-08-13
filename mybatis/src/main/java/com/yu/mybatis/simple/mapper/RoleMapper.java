@@ -2,6 +2,8 @@ package com.yu.mybatis.simple.mapper;
 
 import com.yu.mybatis.simple.model.SysRole;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public interface RoleMapper {
     @Select("select * from sys_role")
     List<SysRole> selectAll();
 
+    List<SysRole> selectAll(RowBounds rowBounds);
 
 
     @Update("update sys_role " +

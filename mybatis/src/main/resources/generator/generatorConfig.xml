@@ -25,7 +25,7 @@
             <property name="addRemarkComments" value="true"/>
         </commentGenerator>
 
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306.mybatis"
+        <jdbcConnection driverClass="com.com.yu.mybatis.web.mysql.jdbc.Driver" connectionURL="jdbc:com.yu.mybatis.web.mysql://localhost:3306.mybatis"
                         userId="root" password="111111"/>
 
         <javaModelGenerator targetPackage="test.model" targetProject="src\main\java">

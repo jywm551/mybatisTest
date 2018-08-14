@@ -2,7 +2,6 @@ package com.yu.mybatis.simple.mapper;
 
 import com.yu.mybatis.simple.model.SysRole;
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;

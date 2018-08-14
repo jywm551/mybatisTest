@@ -30,13 +30,13 @@ import java.util.Properties;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class PageInterceptor implements Interceptor {
 
-    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>();
+    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
     private Dialect dialect;
-    private Field additionalParameterField;
+    private Field additionalParametersField;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        // 截取拦截方法的参数
+        // 获取拦截方法的参数
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         Object parameterObject = args[1];
@@ -48,7 +48,7 @@ public class PageInterceptor implements Interceptor {
             Executor executor = (Executor) invocation.getTarget();
             BoundSql boundSql = ms.getBoundSql(parameterObject);
             // 反射获取动态参数
-            Map<String, Object> additionalParameters = (Map<String, Object>) additionalParameterField.get(boundSql);
+            Map<String, Object> additionalParameters = (Map<String, Object>) additionalParametersField.get(boundSql);
             // 判断是否需要进行count查询
             if (dialect.beforeCount(ms.getId(), parameterObject, rowBounds)) {
                 // 根据当前的ms创建一个返回值为Long类型的ms
@@ -165,7 +165,7 @@ public class PageInterceptor implements Interceptor {
         dialect.setProperties(properties);
         try {
             // 反射获取BoundSql中的additionalParameters属性
-            additionalParameterField = BoundSql.class.getDeclaredField("additionalParameters");
+            additionalParametersField = BoundSql.class.getDeclaredField("additionalParameters");
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }

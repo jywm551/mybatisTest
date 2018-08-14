@@ -23,7 +23,7 @@
     </typeHandlers>
 
     <plugins>
-        <plugin interceptor="com.yu.mybatis.simple.plugin.CamelHumpInterceptor"/>
+        <!--<plugin interceptor="com.yu.mybatis.simple.plugin.CamelHumpInterceptor"/>-->
         <plugin interceptor="com.yu.mybatis.simple.plugin.PageInterceptor">
             <property name="dialect" value="com.yu.mybatis.simple.plugin.MySqlDialect"/>
         </plugin>
@@ -33,8 +33,8 @@
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="UNPOOLED">
-                <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>
+                <property name="driver" value="com.com.yu.mybatis.web.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:com.yu.mybatis.web.mysql://localhost:3306/mybatis"/>
                 <property name="username" value="root"/>
                 <property name="password" value="111111"/>
             </dataSource>

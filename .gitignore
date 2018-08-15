@@ -12,12 +12,5 @@
 hs_err_pid*
 /.idea/
 *.iml
-backend
-cas
-core
-ConfigServer
-messaging
-utils
-web
-feed
+
 

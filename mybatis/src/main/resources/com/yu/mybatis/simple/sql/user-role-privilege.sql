@@ -52,8 +52,8 @@ CREATE TABLE sys_role_privilege (
 ALTER TABLE sys_role_privilege
   COMMENT '用户权限关联表';
 
-INSERT INTO sys_user VALUES ('1 ', 'admin ', '123456 ', 'admin@mybatis.tk ', '管理员', NULL, '2016-04 - 01 17:00 : 58 '),
-  ('l 00 l ', 'test ', '123456 ', 'test@mybatis . tk ', '测试用户', NULL, '2016 - 04 - 01 17 : 01 : 52 ');
+INSERT INTO sys_user VALUES ('1 ', 'admin ', '123456 ', 'admin@mybatis.com ', '管理员', NULL, '2016-04 - 01 17:00 : 58 '),
+  ('l 00 l ', 'test ', '123456 ', 'test@mybatis . com ', '测试用户', NULL, '2016 - 04 - 01 17 : 01 : 52 ');
 
 INSERT INTO sys_role VALUES ('1', '管理员', '1', 'l', '2016-04-01 17:02:14 '),
   ('2', '普通用户', '1', '1', '2016-04-01 17:02:34 ');

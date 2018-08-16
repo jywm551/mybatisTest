@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yu.mybatis.web.mapper.DictMapper">
+
+    <select id="selectByPrimaryKey" resultType="com.yu.mybatis.web.model.SysDict">
+        SELECT
+            id,
+            code,
+            name,
+            `value`
+        FROM sys_dict
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectBySysDict" resultType="com.yu.mybatis.web.model.SysDict">
+        SELECT * FROM sys_dict
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="code != null and code!= ''">
+                and code = #{code}
+            </if>
+        </where>
+        ORDER BY code,`value`
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dict (code, name, value) VALUES (#{code}, #{name}, #{value})
+    </insert>
+
+    <update id="updateById">
+        UPDATE sys_dict
+        SET code = #{code}, name = #{name}, value = #{value}
+        WHERE id = #{id}
+    </update>
+</mapper>
